@@ -60,10 +60,11 @@ jobs:
               }
             }
             
-            const prNumber = github.context.payload.pull_request.number;
+            console.log(github.context)
+            const prNumber = github.event.pull_request.number;
             const comments = await github.rest.issues.listComments({
-              owner: github.context.repo.owner,
-              repo: github.context.repo.repo,
+              owner: github.event.repository.name,
+              repo: github.event.repository.owner.name,
               issue_number: prNumber,
             });
             
@@ -74,15 +75,15 @@ jobs:
             
             if (botComment) {
               await github.rest.issues.updateComment({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
+                owner: github.event.repository.name,
+                repo: github.event.repository.owner.name,
                 comment_id: botComment.id,
                 body: commentBody,
               });
             } else {
               await github.rest.issues.createComment({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
+                owner: github.event.repository.name,
+                repo: github.event.repository.owner.name,
                 issue_number: prNumber,
                 body: commentBody,
               });
