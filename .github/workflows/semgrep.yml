@@ -34,57 +34,25 @@ jobs:
           name: semgrep
           path: semgrep.json
 
-      - name: Post Semgrep results as PR comment
+      - name: Generate Semgrep comment body
+        run: |
+          echo "### Semgrep Results" > semgrep-comment.md
+          if jq '.results | length == 0' semgrep.json; then
+            echo -e "\nNo issues found!" >> semgrep-comment.md
+          else
+            count=$(jq '.results | length' semgrep.json)
+            echo -e "\nFound $count issue(s):\n" >> semgrep-comment.md
+            jq -r '.results[:10][] | "- **\(.check_id)**: \(.extra.message) (Severity: \(.extra.severity))"' semgrep.json >> semgrep-comment.md
+            if [ "$count" -gt 10 ]; then
+              echo -e "\n...and more. See full report in the artifact." >> semgrep-comment.md
+            fi
+          fi
+
+      - name: Create or update PR comment
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: peter-evans/create-or-update-comment@v4
         with:
-          script: |
-            const fs = require('fs');
-            const path = 'semgrep.json';
-            if (!fs.existsSync(path)) {
-              core.setFailed('semgrep.json not found');
-              return;
-            }
-            const semgrepResults = JSON.parse(fs.readFileSync(path, 'utf8'));
-            
-            let commentBody = '### Semgrep Results\n\n';
-            if (semgrepResults.results.length === 0) {
-              commentBody += 'No issues found!';
-            } else {
-              commentBody += `Found ${semgrepResults.results.length} issue(s):\n\n`;
-              semgrepResults.results.slice(0, 10).forEach((result, i) => {
-                commentBody += `- **${result.check_id}**: ${result.extra.message} (Severity: ${result.extra.severity})\n`;
-              });
-              if (semgrepResults.results.length > 10) {
-                commentBody += `\n...and more. See full report in the artifact.\n`;
-              }
-            }
-            
-            console.log(github.context)
-            const prNumber = github.event.pull_request.number;
-            const comments = await github.rest.issues.listComments({
-              owner: github.event.repository.name,
-              repo: github.event.repository.owner.name,
-              issue_number: prNumber,
-            });
-            
-            const botComment = comments.data.find(comment =>
-              comment.user.login === 'github-actions[bot]' &&
-              comment.body.startsWith('### Semgrep Results')
-            );
-            
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: github.event.repository.name,
-                repo: github.event.repository.owner.name,
-                comment_id: botComment.id,
-                body: commentBody,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: github.event.repository.name,
-                repo: github.event.repository.owner.name,
-                issue_number: prNumber,
-                body: commentBody,
-              });
-            }
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: semgrep-comment.md
+          edit-mode: replace
+          comment-author: 'github-actions[bot]'
