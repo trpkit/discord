@@ -1,0 +1,89 @@
+name: "Semgrep"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  semgrep:
+    name: Semgrep Scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Perform Semgrep Scan
+        run: |
+          semgrep scan --config=p/security-audit \
+            --config=p/nodejs \
+            --config=p/typescript \
+            --config=p/javascript \ 
+            --config=p/owasp-top-ten \
+            --json \
+            --json-output=semgrep.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep
+          path: semgrep.json
+
+      - name: Post Semgrep results as PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github_script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'semgrep.json';
+            if (!fs.existsSync(path)) {
+              core.setFailed('semgrep.json not found');
+              return;
+            }
+            const semgrepResults = JSON.parse(fs.readFileSync(path, 'utf8'));
+            
+            let commentBody = '### Semgrep Results\n\n';
+            if (semgrepResults.results.length === 0) {
+              commentBody += 'No issues found!';
+            } else {
+              commentBody += `Found ${semgrepResults.results.length} issue(s):\n\n`;
+              semgrepResults.results.slice(0, 10).forEach((result, i) => {
+                commentBody += `- **${result.check_id}**: ${result.extra.message} (Severity: ${result.extra.severity})\n`;
+              });
+              if (semgrepResults.results.length > 10) {
+                commentBody += `\n...and more. See full report in the artifact.\n`;
+              }
+            }
+            
+            const prNumber = github.context.payload.pull_request.number;
+            const comments = await github.rest.issues.listComments({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
+              issue_number: prNumber,
+            });
+            
+            const botComment = comments.data.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body.startsWith('### Semgrep Scan Results')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody,
+              });
+            }
