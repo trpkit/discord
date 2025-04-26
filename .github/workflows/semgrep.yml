@@ -55,4 +55,3 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body-path: semgrep-comment.md
           edit-mode: replace
-          comment-author: 'github-actions[bot]'
