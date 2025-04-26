@@ -1,9 +1,12 @@
 import {
+  type ApplicationCommand,
   type ApplicationCommandData,
   type AutocompleteInteraction,
   type ChatInputCommandInteraction,
   type Client,
   Collection,
+  REST,
+  Routes,
 } from "discord.js";
 import fg from "fast-glob";
 
@@ -13,6 +16,7 @@ type CommandMetadata = {
 };
 
 type CommandHandler<C extends Client> = {
+  metadata: CommandMetadata;
   chatInput: (
     client: C,
     interaction: ChatInputCommandInteraction,
@@ -25,18 +29,14 @@ type CommandHandler<C extends Client> = {
   ) => Promise<unknown> | unknown;
 };
 
-export function createCommand<C extends Client>(
-  config: {
-    metadata: CommandMetadata;
-  } & CommandHandler<C>
-) {
+export function createCommand<C extends Client>(config: CommandHandler<C>) {
   return config;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: can safely ignore
 class CommandCollection extends Collection<string, CommandHandler<any>> {
   // biome-ignore lint/suspicious/noExplicitAny: can safely ignore
-  add(command: CommandHandler<any> & { metadata: CommandMetadata }) {
+  add(command: CommandHandler<any>) {
     this.set(command.metadata.options.name.toLowerCase(), command);
   }
 }
@@ -67,4 +67,41 @@ export function loadCommands() {
   }
 
   return coll;
+}
+
+export async function registerGlobalCommands(
+  token: string,
+  applicationId: string,
+  commands: ApplicationCommandData[]
+) {
+  const rest = new REST().setToken(token);
+
+  try {
+    await rest.put(Routes.applicationCommands(applicationId), {
+      body: commands,
+    });
+    console.log(`Successfully registered ${commands.length} application commands`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+export async function unregisterGlobalCommands(token: string, applicationId: string) {
+  const rest = new REST().setToken(token);
+
+  try {
+    const commands = (await rest.get(
+      Routes.applicationCommands(applicationId)
+    )) as ApplicationCommand[];
+
+    for (const command of commands) {
+      await rest.delete(Routes.applicationCommand(applicationId, command.id));
+    }
+
+    console.log(`Successfully deleted ${commands.length} application commands`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 }
