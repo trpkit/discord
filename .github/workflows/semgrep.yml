@@ -26,8 +26,7 @@ jobs:
             --config=p/javascript \
             --config=p/owasp-top-ten \
             --json \
-            --json-output=semgrep.json \
-            --suppress-errors
+            --json-output=semgrep.json
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
