@@ -32,6 +32,12 @@ importers:
       discord.js:
         specifier: ^14.19.1
         version: 14.19.1
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
       zod:
         specifier: ^3.24.3
         version: 3.24.3

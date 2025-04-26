@@ -1,11 +1,11 @@
 import { env } from "@/env";
+import { loadEvents, registerEvents } from "@/lib/EventHandler";
 import { Client } from "discord.js";
 
 const client = new Client({ intents: [] });
 
-client.once("ready", (readyClient) => {
-  console.log(`Logged in as ${readyClient.user.tag}!`);
-});
+const events = loadEvents();
+registerEvents(client, events);
 
 (async () => {
   try {
