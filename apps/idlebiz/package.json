@@ -1,0 +1,12 @@
+{
+  "name": "@trpkit/idlebiz",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "discord.js": "^14.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "typescript": "^5.8.3"
+  }
+}
