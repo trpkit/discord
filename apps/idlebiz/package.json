@@ -2,11 +2,18 @@
   "name": "@trpkit/idlebiz",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "dev": "pnpm build && pnpm start",
+    "start": "node --env-file=.env dist/index.js"
+  },
   "dependencies": {
-    "discord.js": "^14.19.1"
+    "discord.js": "^14.19.1",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.2",
+    "tsc-alias": "^1.8.15",
     "typescript": "^5.8.3"
   }
 }

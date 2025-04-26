@@ -3,14 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "format": "biome check --write ."
+    "build": "turbo run build",
+    "dev:idlebiz": "turbo run dev -F=@trpkit/idlebiz...",
+    "format": "biome check --write .",
+    "lint-staged": "lint-staged",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "simple-git-hooks"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "lint-staged": "^15.5.1",
+    "simple-git-hooks": "^2.13.0",
     "turbo": "^2.5.2"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged",
+    "commit-msg": "pnpm exec commitlint --edit $1"
+  },
+  "lint-staged": {
+    "*": ["biome check --no-errors-on-unmatched --files-ignore-unknown=true"]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome"]
+    "onlyBuiltDependencies": ["@biomejs/biome", "simple-git-hooks"]
   },
   "packageManager": "pnpm@10.4.1"
 }

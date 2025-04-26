@@ -1,5 +1,19 @@
 {
   "$schema": "https://turborepo.com/schema.v2.json",
   "ui": "stream",
-  "tasks": {}
+  "tasks": {
+    "build": {
+      "dependsOn": ["^builld"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "dependsOn": [],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false
+    }
+  }
 }
