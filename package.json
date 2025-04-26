@@ -1,0 +1,16 @@
+{
+  "name": "@trpkit/discord",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "format": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "turbo": "^2.5.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@biomejs/biome"]
+  },
+  "packageManager": "pnpm@10.4.1"
+}
