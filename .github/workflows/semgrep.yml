@@ -34,7 +34,8 @@ jobs:
           name: semgrep
           path: semgrep.json
 
-      - name: Find Comment
+      - name: Find previous comment
+        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v3
         id: fc
         with:
@@ -43,6 +44,7 @@ jobs:
           body-includes: Semgrep Results
 
       - name: Generate Semgrep comment body
+        if: github.event_name == 'pull_request'
         run: |
           echo "### Semgrep Results" > semgrep-comment.md
           if jq '.results | length == 0' semgrep.json; then
