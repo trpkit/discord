@@ -8,6 +8,7 @@ export default createCommand({
       description: "Vote for IdleBiz on top.gg to receive some rewards",
       type: ApplicationCommandType.ChatInput,
     },
+    enabled: false,
   },
   chatInput: async (client, interaction) => {
     await interaction.reply({
