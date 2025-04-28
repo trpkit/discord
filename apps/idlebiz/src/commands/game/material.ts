@@ -1,5 +1,5 @@
 import { createCommand } from "@/lib/CommandHandler";
-import { ApplicationCommandType } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 
 export default createCommand({
   metadata: {
@@ -7,6 +7,21 @@ export default createCommand({
       name: "material",
       description: "View info about a specific material",
       type: ApplicationCommandType.ChatInput,
+      options: [
+        {
+          name: "info",
+          description: "Get information about a material",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "material",
+              description: "The material to get information about",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+            },
+          ],
+        },
+      ],
     },
     enabled: false,
   },
