@@ -9,7 +9,6 @@ const envSchema = z.object({
 
   // MongoDB
   MONGODB_URI: z.string(),
-  MONGODB_DB: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -22,7 +21,7 @@ ${parsed.error.errors.map((error) => `  ${error.path}: ${error.message}`).join("
   process.exit(1);
 }
 
-const secretEnvs: Array<keyof typeof envSchema.shape> = ["DISCORD_TOKEN"];
+const secretEnvs: Array<keyof typeof envSchema.shape> = ["DISCORD_TOKEN", "MONGODB_URI"];
 
 for (const secretEnv of secretEnvs) {
   delete process.env[secretEnv];
