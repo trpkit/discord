@@ -9,7 +9,6 @@ const envSchema = z.object({
 
   // MongoDB
   MONGODB_URI: z.string(),
-  MONGODB_DB: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

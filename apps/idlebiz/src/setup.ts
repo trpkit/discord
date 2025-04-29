@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { mongo } from "@/lib/mongo";
 import type { Building } from "@/lib/types/building";
 import type { Material } from "@/lib/types/material";
@@ -9,7 +8,7 @@ import ms from "ms";
 
   try {
     const client = await mongo();
-    const db = client.db(env.MONGODB_DB);
+    const db = client.db();
 
     const materialsCount = await db.collection("materials").countDocuments();
 
