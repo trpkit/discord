@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "build": "tsc && tsc-alias",
-    "cmd:register": "node --env-file=.env dist/register.ts",
-    "cmd:unregister": "node --env-file=.env dist/unregister.ts",
+    "cmd:register": "node --env-file=.env dist/register.js",
+    "cmd:unregister": "node --env-file=.env dist/unregister.js",
     "dev": "pnpm build && pnpm start",
     "start": "node --env-file=.env dist/index.js"
   },
   "dependencies": {
     "discord.js": "^14.19.1",
     "fast-glob": "^3.3.3",
+    "mongodb": "^6.16.0",
     "tslib": "^2.8.1",
     "zod": "^3.24.3"
   },
