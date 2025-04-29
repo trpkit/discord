@@ -1,6 +1,6 @@
+import type { Building } from "@/game/types/building";
+import type { Material } from "@/game/types/material";
 import { mongo } from "@/lib/mongo";
-import type { Building } from "@/lib/types/building";
-import type { Material } from "@/lib/types/material";
 import ms from "ms";
 
 (async () => {
