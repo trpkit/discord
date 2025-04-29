@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "tsc && tsc-alias",
-    "cmd:register": "node --env-file=.env dist/register.ts",
-    "cmd:unregister": "node --env-file=.env dist/unregister.ts",
+    "cmd:register": "node --env-file=.env dist/register.js",
+    "cmd:unregister": "node --env-file=.env dist/unregister.js",
     "dev": "pnpm build && pnpm start",
     "start": "node --env-file=.env dist/index.js"
   },
