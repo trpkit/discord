@@ -12,6 +12,7 @@
   "dependencies": {
     "discord.js": "^14.19.1",
     "fast-glob": "^3.3.3",
+    "mongodb": "^6.16.0",
     "tslib": "^2.8.1",
     "zod": "^3.24.3"
   },

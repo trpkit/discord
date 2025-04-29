@@ -6,6 +6,10 @@ const envSchema = z.object({
   // Discord
   DISCORD_TOKEN: z.string(),
   DISCORD_APPLICATION_ID: z.string(),
+
+  // MongoDB
+  MONGODB_URI: z.string(),
+  MONGODB_DB: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);
