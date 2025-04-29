@@ -80,7 +80,26 @@ export async function registerGlobalCommands(
     await rest.put(Routes.applicationCommands(applicationId), {
       body: commands,
     });
-    console.log(`Successfully registered ${commands.length} application commands`);
+    console.log(`Successfully registered ${commands.length} global commands.`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+export async function registerGuildCommands(
+  token: string,
+  applicationId: string,
+  guildId: string,
+  commands: ApplicationCommandData[]
+) {
+  const rest = new REST().setToken(token);
+
+  try {
+    await rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
+      body: commands,
+    });
+    console.log(`Successfully registered ${commands.length} guild commands.`);
   } catch (e) {
     console.error(e);
     process.exit(1);
@@ -99,7 +118,30 @@ export async function unregisterGlobalCommands(token: string, applicationId: str
       await rest.delete(Routes.applicationCommand(applicationId, command.id));
     }
 
-    console.log(`Successfully deleted ${commands.length} application commands`);
+    console.log(`Successfully deleted ${commands.length} global commands.`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+export async function unregisterGuildCommands(
+  token: string,
+  applicationId: string,
+  guildId: string
+) {
+  const rest = new REST().setToken(token);
+
+  try {
+    const commands = (await rest.get(
+      Routes.applicationGuildCommands(applicationId, guildId)
+    )) as ApplicationCommand[];
+
+    for (const command of commands) {
+      await rest.delete(Routes.applicationCommand(applicationId, command.id));
+    }
+
+    console.log(`Successfully deleted ${commands.length} guild commands.`);
   } catch (e) {
     console.error(e);
     process.exit(1);
