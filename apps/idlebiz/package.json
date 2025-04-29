@@ -7,16 +7,19 @@
     "cmd:register": "node --env-file=.env dist/register.js",
     "cmd:unregister": "node --env-file=.env dist/unregister.js",
     "dev": "pnpm build && pnpm start",
+    "setup": "node --env-file=.env dist/setup.js",
     "start": "node --env-file=.env dist/index.js"
   },
   "dependencies": {
     "discord.js": "^14.19.1",
     "fast-glob": "^3.3.3",
     "mongodb": "^6.16.0",
+    "ms": "^2.1.3",
     "tslib": "^2.8.1",
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@types/ms": "^2.1.0",
     "@types/node": "^22.15.2",
     "tsc-alias": "^1.8.15",
     "typescript": "^5.8.3"
