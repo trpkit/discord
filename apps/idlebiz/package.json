@@ -8,7 +8,9 @@
     "cmd:unregister": "node --env-file=.env dist/unregister.js",
     "dev": "pnpm build && pnpm start",
     "setup": "node --env-file=.env dist/setup.js",
-    "start": "node --env-file=.env dist/index.js"
+    "start": "node --env-file=.env dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "discord.js": "^14.19.1",
@@ -22,6 +24,7 @@
     "@types/ms": "^2.1.0",
     "@types/node": "^22.15.2",
     "tsc-alias": "^1.8.15",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
   }
 }
