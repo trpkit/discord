@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev:idlebiz": "turbo run dev -F=@trpkit/idlebiz...",
+    "dev:typicalbot": "turbo run dev -F=@trpkit/typicalbot...",
     "format": "biome check --write .",
     "lint-staged": "lint-staged",
     "preinstall": "npx only-allow pnpm",
